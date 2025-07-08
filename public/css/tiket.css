@@ -1,0 +1,22 @@
+/* E-Tiket styling */
+.qr-container {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    margin: 0 auto;
+    background: white;
+    padding: 8px;
+}
+
+#qrcode-image {
+    image-rendering: pixelated;
+    image-rendering: -webkit-optimize-contrast;
+    background-color: white;
+    border: 1px solid #ddd;
+}
+
+.booking-code {
+    font-size: 16px;
+    letter-spacing: 1px;
+    color: #333;
+}
+
+/* Print-specific styles moved to the tiket.php file for reliability */

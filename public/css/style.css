@@ -1,0 +1,122 @@
+/* General Body & Theme */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Blue and White Theme */
+.bg-primary {
+    background-color: #0D6EFD !important;
+}
+
+.text-primary {
+    color: #0D6EFD !important;
+}
+
+.btn-primary {
+    background-color: #0D6EFD;
+    border-color: #0D6EFD;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+.btn-outline-primary {
+    color: #0D6EFD;
+    border-color: #0D6EFD;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0D6EFD;
+    color: #fff;
+}
+
+.form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Navbar */
+.navbar-brand {
+    font-weight: 600;
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+    font-weight: 500;
+}
+
+/* Sidebar Admin */
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidebar .nav-link {
+    font-weight: 500;
+    color: #333;
+}
+
+.sidebar .nav-link .fa-icon {
+    margin-right: 8px;
+}
+
+.sidebar .nav-link.active {
+    color: #0D6EFD;
+}
+
+/* Cards */
+.card {
+    border: 1px solid #e9ecef;
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+}
+
+/* Seat Selection */
+.seat {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+    border-radius: 5px;
+    background-color: #e9ecef;
+    cursor: pointer;
+    border: 1px solid #ced4da;
+}
+
+.seat.selected {
+    background-color: #0D6EFD;
+    color: white;
+    border-color: #0D6EFD;
+}
+
+.seat.booked {
+    background-color: #6c757d;
+    color: white;
+    cursor: not-allowed;
+}
+
+.seat-checkbox {
+    display: none;
+}

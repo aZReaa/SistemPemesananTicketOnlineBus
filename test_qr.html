@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test QR Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        img {
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .test-item {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>QR Code Test</h1>
+        
+        <div class="test-item">
+            <h3>Local PHP Generator</h3>
+            <img src="generate_qr.php?data=TEST123&size=150" alt="Local PHP QR Code">
+            <p>This should display a locally generated QR code using our PHP script.</p>
+        </div>
+        
+        <div class="test-item">
+            <h3>QR Server API</h3>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?data=TEST123&size=150x150" alt="QR Server API">
+            <p>This should display a QR code from the QR Server API (external).</p>
+        </div>
+        
+        <div class="test-item">
+            <h3>Manual Print Test</h3>
+            <button onclick="window.print()">Test Print</button>
+            <p>Click this button to test the print functionality.</p>
+        </div>
+    </div>
+</body>
+</html>
