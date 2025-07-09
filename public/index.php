@@ -23,15 +23,15 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 // Untuk saat ini, kita akan fokus pada alur otentikasi (login/register)
 switch ($page) {
     case 'register':
-        require_once __DIR__ . '/../controllers/PelangganController.php';
-        $pelangganController = new PelangganController($pdo);
-        $pelangganController->registrasi();
+        require_once __DIR__ . '/../controllers/AuthController.php';
+        $authController = new AuthController($pdo);
+        $authController->showRegistrationForm();
         break;
 
     case 'register_process':
-        require_once __DIR__ . '/../controllers/PelangganController.php';
-        $pelangganController = new PelangganController($pdo);
-        $pelangganController->registrasi();
+        require_once __DIR__ . '/../controllers/AuthController.php';
+        $authController = new AuthController($pdo);
+        $authController->processRegistration();
         break;
 
     case 'login':

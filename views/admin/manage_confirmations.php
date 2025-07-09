@@ -18,18 +18,41 @@ if (isset($_GET['error'])) {
 }
 ?>
 
+<!-- Inline CSS for table header visibility -->
+<style>
+.table thead th {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none !important;
+    padding: 1rem !important;
+}
+.table thead th strong {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+</style>
+
 <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-credit-card me-2"></i>Konfirmasi Pembayaran
+        </h5>
+    </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
                     <tr>
-                        <th>ID Pesanan</th>
-                        <th>Pelanggan</th>
-                        <th>Tgl. Pembayaran</th>
-                        <th class="text-end">Jumlah</th>
-                        <th class="text-center">Bukti</th>
-                        <th class="text-center">Aksi</th>
+                        <th><strong>ID Pesanan</strong></th>
+                        <th><strong>Pelanggan</strong></th>
+                        <th><strong>Tgl. Pembayaran</strong></th>
+                        <th class="text-end"><strong>Jumlah</strong></th>
+                        <th class="text-center"><strong>Bukti</strong></th>
+                        <th class="text-center"><strong>Aksi</strong></th>
                     </tr>
                 </thead>
                 <tbody>

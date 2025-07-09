@@ -1,9 +1,25 @@
 <?php
 // File: views/pelanggan/detail_pemesanan.php
 ?>
-<div class="<?php
-// File: views/pelanggan/detail_pemesanan.php
-?>
+
+<!-- Inline CSS for table header visibility -->
+<style>
+.table thead th {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none !important;
+    padding: 1rem !important;
+}
+.table thead th strong {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+</style>
+
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
@@ -77,8 +93,8 @@
                     <table class="table table-sm table-bordered">
                         <thead>
                             <tr>
-                                <th>Nama Penumpang</th>
-                                <th>Nomor Kursi</th>
+                                <th><strong>Nama Penumpang</strong></th>
+                                <th class="text-center"><strong>Nomor Kursi</strong></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -92,13 +108,13 @@
                                 foreach ($kursi_list as $kursi): ?>
                                 <tr>
                                     <td><?php echo htmlspecialchars($pemesanan['nama_pelanggan'] ?? $_SESSION['username'] ?? 'N/A'); ?></td>
-                                    <td><?php echo htmlspecialchars(trim($kursi)); ?></td>
+                                    <td class="text-center"><?php echo htmlspecialchars(trim($kursi)); ?></td>
                                 </tr>
                                 <?php endforeach; 
                             else: ?>
                                 <tr>
                                     <td><?php echo htmlspecialchars($pemesanan['nama_pelanggan'] ?? $_SESSION['username'] ?? 'N/A'); ?></td>
-                                    <td>N/A</td>
+                                    <td class="text-center">N/A</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>

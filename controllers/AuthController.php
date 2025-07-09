@@ -14,46 +14,101 @@ class AuthController {
      * Menampilkan halaman formulir registrasi.
      */
     public function showRegistrationForm() {
+        // Template variables untuk unified header
+        $pageTitle = 'Registrasi Pelanggan - Sistem Tiket Bus';
+        $userRole = 'guest';
+        $breadcrumbs = [
+            ['text' => 'Home', 'href' => 'index.php?page=home'],
+            ['text' => 'Registrasi', 'href' => '#']
+        ];
+        
         // Memuat file view untuk formulir registrasi
+        require_once __DIR__ . '/../views/layout/unified_header.php';
         require_once __DIR__ . '/../views/auth/registrasi.php';
+        require_once __DIR__ . '/../views/layout/footer.php';
     }
 
     /**
      * Memproses data dari formulir registrasi.
      */
-    public function register() {
+    public function processRegistration() {
         // Memastikan request adalah POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Validasi sederhana (bisa diperketat)
-            if (empty($_POST['username']) || empty($_POST['email']) || empty($_POST['password']) || $_POST['password'] !== $_POST['confirm_password']) {
-                // Jika validasi gagal, kembalikan ke form dengan pesan error
-                $error = "Data tidak lengkap atau password tidak cocok.";
-                require_once __DIR__ . '/../views/auth/registrasi.php';
+            // Validasi sederhana
+            if (empty($_POST['username']) || empty($_POST['email']) || empty($_POST['password']) || empty($_POST['confirm_password'])) {
+                $_SESSION['error_message'] = "Semua field wajib diisi.";
+                $this->showRegistrationForm();
+                return;
+            }
+            
+            if ($_POST['password'] !== $_POST['confirm_password']) {
+                $_SESSION['error_message'] = "Password dan konfirmasi password tidak cocok.";
+                $this->showRegistrationForm();
                 return;
             }
 
-            // Membuat instance dari model Pelanggan
-            $pelanggan = new Pelanggan($this->pdo);
-
-            // Menyiapkan data untuk disimpan
-            $data = [
-                'username' => $_POST['username'],
-                'email' => $_POST['email'],
-                'password' => $_POST['password'], // Password harus di-hash sebelum disimpan
-                'no_telp' => $_POST['no_telp'],
-                'alamat' => $_POST['alamat']
-            ];
-
-            // Memanggil metode registrasi dari model
-            if ($pelanggan->registrasi($data)) {
-                // Jika berhasil, arahkan ke halaman login atau halaman sukses
-                echo "Registrasi berhasil! Silakan login.";
-                // header('Location: index.php?page=login');
-            } else {
-                // Jika gagal (misal: username/email sudah ada), tampilkan error
-                $error = "Registrasi gagal. Username atau email mungkin sudah digunakan.";
-                require_once __DIR__ . '/../views/auth/registrasi.php';
+            // Validasi format email
+            if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+                $_SESSION['error_message'] = "Format email tidak valid.";
+                $this->showRegistrationForm();
+                return;
             }
+
+            // Validasi panjang password
+            if (strlen($_POST['password']) < 6) {
+                $_SESSION['error_message'] = "Password minimal 6 karakter.";
+                $this->showRegistrationForm();
+                return;
+            }
+
+            // Load model Pelanggan
+            require_once __DIR__ . '/../models/Pelanggan.php';
+            
+            try {
+                $pelanggan = new Pelanggan($this->pdo);
+
+                // Menyiapkan data untuk disimpan
+                $data = [
+                    'username' => trim($_POST['username']),
+                    'email' => trim($_POST['email']),
+                    'password' => $_POST['password'], // Password akan di-hash di model
+                    'no_telp' => trim($_POST['no_telp'] ?? ''),
+                    'alamat' => trim($_POST['alamat'] ?? '')
+                ];
+
+                // Debug: Log attempt
+                error_log("Registration attempt for: " . $data['username'] . " (" . $data['email'] . ")");
+
+                // Memanggil metode create dari model
+                $result = $pelanggan->create($data);
+                
+                if ($result === true) {
+                    // Jika berhasil, arahkan ke halaman login dengan pesan sukses
+                    $_SESSION['success_message'] = "Registrasi berhasil! Selamat datang, " . $data['username'] . ". Silakan login dengan akun baru Anda.";
+                    header('Location: index.php?page=login');
+                    exit;
+                } else {
+                    // Debug: Log failure
+                    error_log("Registration failed for: " . $data['username'] . " - Result: " . var_export($result, true));
+                    
+                    // Cek specific error
+                    if ($result === 'duplicate') {
+                        $_SESSION['error_message'] = "Username atau email sudah digunakan. Silakan gunakan yang lain.";
+                    } else {
+                        $_SESSION['error_message'] = "Registrasi gagal. Silakan coba lagi atau hubungi administrator.";
+                    }
+                    $this->showRegistrationForm();
+                }
+            } catch (Exception $e) {
+                // Debug: Log exception
+                error_log("Registration exception: " . $e->getMessage());
+                
+                $_SESSION['error_message'] = "Terjadi kesalahan sistem. Silakan coba lagi. (" . $e->getMessage() . ")";
+                $this->showRegistrationForm();
+            }
+        } else {
+            // Jika bukan POST, redirect ke form registrasi
+            $this->showRegistrationForm();
         }
     }
 

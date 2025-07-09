@@ -187,6 +187,72 @@ class Tiket {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Get kapasitas total untuk jadwal tertentu berdasarkan bus
+     * @param int $id_jadwal ID jadwal
+     * @return int Kapasitas total
+     */
+    public function getKapasitasByJadwal($id_jadwal) {
+        try {
+            $stmt = $this->pdo->prepare(
+                "SELECT r.kapasitas 
+                 FROM jadwal j 
+                 JOIN rute r ON j.id_rute = r.id_rute 
+                 WHERE j.id_jadwal = ?"
+            );
+            $stmt->execute([$id_jadwal]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ? (int)$result['kapasitas'] : 40; // Default 40 jika tidak ada data
+        } catch (Exception $e) {
+            return 40; // Default kapasitas
+        }
+    }
+
+    /**
+     * Get jumlah tiket yang sudah dipesan untuk jadwal tertentu
+     * @param int $id_jadwal ID jadwal
+     * @return int Jumlah tiket terpesan
+     */
+    public function getBookedCount($id_jadwal) {
+        try {
+            $stmt = $this->pdo->prepare(
+                "SELECT COUNT(*) as total 
+                 FROM tiket t 
+                 JOIN pemesanan p ON t.id_pemesanan = p.id_pemesanan 
+                 WHERE t.id_jadwal = ? AND p.status IN ('pending', 'paid')"
+            );
+            $stmt->execute([$id_jadwal]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ? (int)$result['total'] : 0;
+        } catch (Exception $e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Get daftar tiket untuk jadwal tertentu dengan detail
+     * @param int $id_jadwal ID jadwal
+     * @return array Daftar tiket dengan detail
+     */
+    public function getTiketByJadwal($id_jadwal) {
+        try {
+            $stmt = $this->pdo->prepare(
+                "SELECT t.*, p.kode_booking, p.status as status_pemesanan,
+                        pel.nama as nama_penumpang, pel.no_telp,
+                        pem.waktu_pembayaran
+                 FROM tiket t
+                 LEFT JOIN pemesanan p ON t.id_pemesanan = p.id_pemesanan
+                 LEFT JOIN pelanggan pel ON p.id_pelanggan = pel.id_user
+                 LEFT JOIN pembayaran pem ON p.id_pemesanan = pem.id_pemesanan
+                 WHERE t.id_jadwal = ?
+                 ORDER BY CAST(t.nomor_kursi AS UNSIGNED)"
+            );
+            $stmt->execute([$id_jadwal]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            return [];
+        }
+    }
 }
 
 ?>

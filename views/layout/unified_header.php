@@ -25,6 +25,22 @@
             <link href="<?php echo $css; ?>" rel="stylesheet">
         <?php endforeach; ?>
     <?php endif; ?>
+    
+    <!-- Hide sidebar for guest users -->
+    <?php if (!isset($_SESSION['user_id']) || $userRole === 'guest'): ?>
+    <style>
+        .sidebar {
+            display: none !important;
+        }
+        .main-content {
+            margin-left: 0 !important;
+            width: 100% !important;
+        }
+        .toggle-btn {
+            display: none !important;
+        }
+    </style>
+    <?php endif; ?>
 </head>
 <body>
     <!-- Mobile Backdrop -->
@@ -41,6 +57,7 @@
         </div>
         
         <!-- User Info -->
+        <?php if (isset($_SESSION['user_id']) && $userRole !== 'guest'): ?>
         <div class="sidebar-user">
             <div class="user-info">
                 <div class="user-avatar">
@@ -52,6 +69,7 @@
                 </div>
             </div>
         </div>
+        <?php endif; ?>
         
         <!-- Navigation Menu -->
         <div class="sidebar-nav">
@@ -64,9 +82,8 @@
                 case 'admin':
                     $menuItems = [
                         ['icon' => 'fas fa-home', 'text' => 'Dashboard', 'href' => 'admin_dashboard'],
-                        ['icon' => 'fas fa-calendar-alt', 'text' => 'Kelola Jadwal', 'href' => 'admin_schedule'],
+                        ['icon' => 'fas fa-calendar-alt', 'text' => 'Kelola Jadwal & Tiket', 'href' => 'admin_schedule'],
                         ['icon' => 'fas fa-route', 'text' => 'Kelola Rute', 'href' => 'admin_rutes'],
-                        ['icon' => 'fas fa-ticket-alt', 'text' => 'Kelola Tiket', 'href' => 'admin_manage_tiket'],
                         ['icon' => 'fas fa-credit-card', 'text' => 'Konfirmasi Pembayaran', 'href' => 'admin_payments'],
                         ['icon' => 'fas fa-users', 'text' => 'Manajemen User', 'href' => 'admin_users'],
                         ['icon' => 'fas fa-chart-bar', 'text' => 'Laporan', 'href' => 'admin_reports'],
@@ -112,16 +129,18 @@
                 </div>
             <?php endforeach; ?>
             
+            <!-- Logout (only for logged in users) -->
+            <?php if (isset($_SESSION['user_id']) && $userRole !== 'guest'): ?>
             <!-- Divider -->
             <div class="nav-divider"></div>
             
-            <!-- Logout -->
             <div class="nav-item">
                 <a href="index.php?page=logout" class="nav-link">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Keluar</span>
                 </a>
             </div>
+            <?php endif; ?>
         </div>
     </nav>
     
@@ -171,6 +190,7 @@
                     <?php endif; ?>
                     
                     <!-- User Menu -->
+                    <?php if (isset($_SESSION['user_id']) && $userRole !== 'guest'): ?>
                     <div class="dropdown">
                         <button class="btn btn-light btn-sm dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown">
                             <div class="user-avatar me-2" style="width: 32px; height: 32px; font-size: 0.8rem;">
@@ -190,6 +210,17 @@
                             </a></li>
                         </ul>
                     </div>
+                    <?php else: ?>
+                    <!-- Guest Actions -->
+                    <div class="d-flex gap-2">
+                        <a href="index.php?page=login" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
+                        <a href="index.php?page=register" class="btn btn-primary btn-sm">
+                            <i class="fas fa-user-plus me-1"></i>Daftar
+                        </a>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </nav>

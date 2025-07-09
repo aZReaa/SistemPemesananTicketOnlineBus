@@ -11,6 +11,24 @@
     </div>
 </div>
 
+<!-- Inline CSS for table header visibility -->
+<style>
+.table thead th {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none !important;
+    padding: 1rem !important;
+}
+.table thead th strong {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+</style>
+
 <!-- Alert Messages -->
 <?php if (isset($_SESSION['success_message'])): ?>
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -31,6 +49,11 @@
 <?php endif; ?>
 
 <div class="card">
+    <div class="card-header bg-primary text-white">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-history me-2"></i>Riwayat Pemesanan Tiket
+        </h5>
+    </div>
     <div class="card-body">
         <?php if (empty($riwayatPemesanan)): ?>
             <div class="text-center py-5">
@@ -43,17 +66,17 @@
             </div>
         <?php else: ?>
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover mb-0">
                     <thead>
                         <tr>
-                            <th>No.</th>
-                            <th>Kode Booking</th>
-                            <th>Jadwal</th>
-                            <th>Jumlah Tiket</th>
-                            <th>Total Harga</th>
-                            <th>Status</th>
-                            <th>Tanggal Pesan</th>
-                            <th>Aksi</th>
+                            <th><strong>No.</strong></th>
+                            <th><strong>Kode Booking</strong></th>
+                            <th><strong>Jadwal</strong></th>
+                            <th class="text-center"><strong>Jumlah Tiket</strong></th>
+                            <th class="text-end"><strong>Total Harga</strong></th>
+                            <th class="text-center"><strong>Status</strong></th>
+                            <th><strong>Tanggal Pesan</strong></th>
+                            <th class="text-center"><strong>Aksi</strong></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,13 +98,13 @@
                                     <?php echo date('H:i', strtotime($pemesanan['waktu_berangkat'])); ?>
                                 </small>
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <span class="badge bg-secondary"><?php echo $pemesanan['jumlah_tiket']; ?> tiket</span>
                             </td>
-                            <td>
+                            <td class="text-end">
                                 <strong class="text-success">Rp <?php echo number_format($pemesanan['total_harga'], 0, ',', '.'); ?></strong>
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <?php
                                 $status = $pemesanan['status_pembayaran'] ?? 'pending';
                                 $badgeClass = 'bg-warning text-dark';
@@ -108,7 +131,7 @@
                                     <?php echo date('d M Y H:i', strtotime($pemesanan['tgl_pesan'])); ?>
                                 </small>
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <div class="btn-group btn-group-sm">
                                     <a href="index.php?page=pelanggan_detail&id=<?php echo $pemesanan['id_pemesanan']; ?>" 
                                        class="btn btn-outline-primary" title="Detail">

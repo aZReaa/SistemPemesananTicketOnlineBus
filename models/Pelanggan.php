@@ -21,29 +21,33 @@ class Pelanggan extends User {
     /**
      * Metode untuk mendaftarkan pelanggan baru.
      * @param array $data Data registrasi (username, password, email, no_telp, alamat).
-     * @return bool True jika registrasi berhasil, false jika gagal.
+     * @return bool|string True jika registrasi berhasil, 'duplicate' jika username/email sudah ada, false jika gagal.
      */
     public function registrasi($data) {
-        // 1. Hash password untuk keamanan
-        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
-
-        // 2. Mulai transaksi database
-        $this->pdo->beginTransaction();
-
         try {
+            // 1. Hash password untuk keamanan
+            $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+
+            // 2. Mulai transaksi database
+            $this->pdo->beginTransaction();
+
             // 3. Cek apakah username atau email sudah ada
-            $stmtCheck = $this->pdo->prepare("SELECT id_user FROM users WHERE username = ? OR email = ?");
+            $stmtCheck = $this->pdo->prepare("SELECT id_user, username, email FROM users WHERE username = ? OR email = ?");
             $stmtCheck->execute([$data['username'], $data['email']]);
-            if ($stmtCheck->fetch()) {
+            $existing = $stmtCheck->fetch();
+            
+            if ($existing) {
                 $this->pdo->rollBack();
-                return false; // User sudah ada
+                // Debug log
+                error_log("Registration failed - duplicate found: " . $existing['username'] . " / " . $existing['email']);
+                return 'duplicate'; // Specific return value for duplicate
             }
 
             // 4. Sisipkan data ke tabel 'users'
             $stmtUser = $this->pdo->prepare(
                 "INSERT INTO users (username, email, password, no_telp, role) VALUES (?, ?, ?, ?, ?)"
             );
-            $stmtUser->execute([
+            $userResult = $stmtUser->execute([
                 $data['username'],
                 $data['email'],
                 $hashedPassword,
@@ -51,26 +55,69 @@ class Pelanggan extends User {
                 $this->role
             ]);
 
+            if (!$userResult) {
+                $this->pdo->rollBack();
+                error_log("Registration failed - user insert failed");
+                return false;
+            }
+
             // 5. Dapatkan ID user yang baru saja dibuat
             $id_user = $this->pdo->lastInsertId();
+
+            if (!$id_user) {
+                $this->pdo->rollBack();
+                error_log("Registration failed - no user ID returned");
+                return false;
+            }
 
             // 6. Sisipkan data ke tabel 'pelanggan'
             $stmtPelanggan = $this->pdo->prepare(
                 "INSERT INTO pelanggan (id_pelanggan, alamat) VALUES (?, ?)"
             );
-            $stmtPelanggan->execute([$id_user, $data['alamat']]);
+            $pelangganResult = $stmtPelanggan->execute([$id_user, $data['alamat'] ?? '']);
+
+            if (!$pelangganResult) {
+                $this->pdo->rollBack();
+                error_log("Registration failed - pelanggan insert failed");
+                return false;
+            }
 
             // 7. Jika semua berhasil, commit transaksi
             $this->pdo->commit();
+            
+            // Debug log success
+            error_log("Registration successful for user ID: " . $id_user);
             return true;
 
         } catch (PDOException $e) {
             // 8. Jika terjadi error, batalkan transaksi (rollback)
             $this->pdo->rollBack();
-            // Sebaiknya catat error ini ke log, bukan menampilkannya langsung
-            // error_log($e->getMessage());
+            
+            // Enhanced error logging
+            error_log("Registration PDO error: " . $e->getMessage() . " | Code: " . $e->getCode());
+            
+            // Check for specific error types
+            if ($e->getCode() == 23000) { // Integrity constraint violation
+                if (strpos($e->getMessage(), 'username') !== false || strpos($e->getMessage(), 'email') !== false) {
+                    return 'duplicate';
+                }
+            }
+            
+            return false;
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            error_log("Registration general error: " . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Alias untuk method registrasi untuk kompatibilitas dengan AuthController
+     * @param array $data Data registrasi (username, password, email, no_telp, alamat).
+     * @return bool True jika registrasi berhasil, false jika gagal.
+     */
+    public function create($data) {
+        return $this->registrasi($data);
     }
 
     /**

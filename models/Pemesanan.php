@@ -37,20 +37,24 @@ class Pemesanan {
             $stmt_pemesanan->execute([$id_pelanggan, $total_harga]);
             $id_pemesanan = $this->pdo->lastInsertId();
 
-            // 2. Masukkan data ke tabel tiket untuk setiap kursi (dengan kode_booking)
-            $sql_tiket = "INSERT INTO tiket (id_pemesanan, id_jadwal, kode_booking, nomor_kursi, status) VALUES (?, ?, ?, ?, 'booked')";
+            // 2. Update tiket yang tersedia menjadi booked untuk setiap kursi
+            $sql_tiket = "UPDATE tiket SET id_pemesanan = ?, kode_booking = ?, status = 'booked' WHERE id_jadwal = ? AND nomor_kursi = ? AND status = 'available'";
             $stmt_tiket = $this->pdo->prepare($sql_tiket);
 
             foreach ($seats as $seat) {
-                // Validasi sederhana untuk memastikan kursi belum dipesan dalam transaksi lain
-                // (Untuk sistem high-concurrency, diperlukan locking mechanism yang lebih kuat)
-                $check_sql = "SELECT COUNT(*) FROM tiket WHERE id_jadwal = ? AND nomor_kursi = ? AND status != 'available'";
+                // Validasi bahwa kursi tersedia
+                $check_sql = "SELECT COUNT(*) FROM tiket WHERE id_jadwal = ? AND nomor_kursi = ? AND status = 'available'";
                 $check_stmt = $this->pdo->prepare($check_sql);
                 $check_stmt->execute([$id_jadwal, $seat]);
-                if ($check_stmt->fetchColumn() > 0) {
-                    throw new Exception("Kursi $seat sudah dipesan orang lain.");
+                if ($check_stmt->fetchColumn() == 0) {
+                    throw new Exception("Kursi $seat sudah tidak tersedia.");
                 }
-                $stmt_tiket->execute([$id_pemesanan, $id_jadwal, $kode_booking, $seat]);
+                
+                // Update tiket menjadi booked
+                $stmt_tiket->execute([$id_pemesanan, $kode_booking, $id_jadwal, $seat]);
+                if ($stmt_tiket->rowCount() == 0) {
+                    throw new Exception("Gagal memesan kursi $seat - kursi mungkin sudah dipesan orang lain.");
+                }
             }
 
             $this->pdo->commit();

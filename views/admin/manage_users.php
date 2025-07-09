@@ -8,6 +8,24 @@ if (!isset($users) || !is_array($users)) {
 }
 ?>
 
+<!-- Inline CSS for table header visibility -->
+<style>
+.table thead th {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none !important;
+    padding: 1rem !important;
+}
+.table thead th strong {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+</style>
+
 <!-- Page Header -->
 <div class="page-header">
     <div>
@@ -84,13 +102,13 @@ if (!isset($users) || !is_array($users)) {
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Username</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Role</th>
-                                    <th scope="col">No. Telp</th>
-                                    <th scope="col">Alamat</th>
-                                    <th scope="col">Aksi</th>
+                                    <th scope="col"><strong>#</strong></th>
+                                    <th scope="col"><strong>Username</strong></th>
+                                    <th scope="col"><strong>Email</strong></th>
+                                    <th scope="col"><strong>Role</strong></th>
+                                    <th scope="col"><strong>No. Telp</strong></th>
+                                    <th scope="col"><strong>Alamat</strong></th>
+                                    <th scope="col" class="text-center"><strong>Aksi</strong></th>
                                 </tr>
                             </thead>
                             <tbody>

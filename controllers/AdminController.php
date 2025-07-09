@@ -55,19 +55,30 @@ class AdminController {
     }
 
     /**
-     * Method kelolaJadwal sesuai dengan UML
+     * Method kelolaJadwal sesuai dengan UML - sekarang termasuk kelola tiket
      */
     public function kelolaJadwal() {
         require_once __DIR__ . '/../models/Jadwal.php';
+        require_once __DIR__ . '/../models/Tiket.php';
+        
         $jadwalModel = new Jadwal($this->pdo);
+        $tiketModel = new Tiket($this->pdo);
+        
         $jadwalList = $jadwalModel->getAll();
+        
+        // Tambahkan informasi kapasitas untuk setiap jadwal
+        foreach ($jadwalList as &$jadwal) {
+            $jadwal['kapasitas'] = $tiketModel->getKapasitasByJadwal($jadwal['id_jadwal']) ?? 40;
+            $jadwal['tiket_terpesan'] = $tiketModel->getBookedCount($jadwal['id_jadwal']);
+            $jadwal['tiket_tersedia'] = $jadwal['kapasitas'] - $jadwal['tiket_terpesan'];
+        }
 
         // Set template variables
-        $pageTitle = 'Kelola Jadwal - Admin';
+        $pageTitle = 'Kelola Jadwal & Tiket - Admin';
         $userRole = 'admin';
         $breadcrumbs = [
             ['text' => 'Dashboard', 'href' => 'index.php?page=admin_dashboard'],
-            ['text' => 'Kelola Jadwal', 'href' => '#']
+            ['text' => 'Kelola Jadwal & Tiket', 'href' => '#']
         ];
 
         require_once __DIR__ . '/../views/layout/unified_header.php';
@@ -76,24 +87,12 @@ class AdminController {
     }
 
     /**
-     * Method kelolaTiket sesuai dengan UML
+     * Method kelolaTiket sesuai dengan UML - redirect ke kelolaJadwal untuk konsistensi
      */
     public function kelolaTiket() {
-        require_once __DIR__ . '/../models/Tiket.php';
-        $tiketModel = new Tiket($this->pdo);
-        $tiketList = $tiketModel->getAll();
-
-        // Set template variables
-        $pageTitle = 'Kelola Tiket - Admin';
-        $userRole = 'admin';
-        $breadcrumbs = [
-            ['text' => 'Dashboard', 'href' => 'index.php?page=admin_dashboard'],
-            ['text' => 'Kelola Tiket', 'href' => '#']
-        ];
-
-        require_once __DIR__ . '/../views/layout/unified_header.php';
-        require_once __DIR__ . '/../views/admin/manage_tiket.php';
-        require_once __DIR__ . '/../views/layout/footer.php';
+        // Redirect ke kelolaJadwal karena sekarang terintegrasi
+        header('Location: index.php?page=admin_schedule#tiket');
+        exit;
     }
 
     /**

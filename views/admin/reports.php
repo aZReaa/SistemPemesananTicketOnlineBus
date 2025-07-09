@@ -1,3 +1,21 @@
+<!-- Inline CSS for table header visibility -->
+<style>
+.table thead th {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none !important;
+    padding: 1rem !important;
+}
+.table thead th strong {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+</style>
+
 <!-- Page Header -->
 <div class="page-header">
     <div>
@@ -73,10 +91,10 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>ID Pesanan</th>
-                                    <th>Pelanggan</th>
-                                    <th>Tgl. Pembayaran</th>
-                                    <th class="text-end">Jumlah</th>
+                                    <th><strong>ID Pesanan</strong></th>
+                                    <th><strong>Pelanggan</strong></th>
+                                    <th><strong>Tgl. Pembayaran</strong></th>
+                                    <th class="text-end"><strong>Jumlah</strong></th>
                                 </tr>
                             </thead>
                             <tbody>
