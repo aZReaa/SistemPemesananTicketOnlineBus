@@ -178,12 +178,6 @@
                             Laporan
                         </a>
                         
-                        <a class="nav-link <?= (isset($_GET['page']) && $_GET['page'] == 'admin_users') ? 'active' : '' ?>" 
-                           href="index.php?page=admin_users">
-                            <i class="fas fa-users"></i>
-                            Kelola Pengguna
-                        </a>
-                        
                         <hr class="text-white mx-3">
                         
                         <a class="nav-link btn-logout" href="index.php?page=logout">

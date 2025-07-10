@@ -9,45 +9,17 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-        
         body {
             background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
         .auth-container {
-            width: 100%;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        
-        .container-fluid {
-            padding: 0;
-            margin: 0;
-            width: 100%;
-        }
-        
-        .row {
-            margin: 0;
-            width: 100%;
+            padding: 2rem 0;
         }
         
         .auth-card {
@@ -57,7 +29,6 @@
             overflow: hidden;
             max-width: 900px;
             width: 100%;
-            margin: auto;
         }
         
         .brand-section {
@@ -200,38 +171,7 @@
             color: #6c757d;
         }
         
-        @media (max-width: 992px) {
-            .auth-card {
-                max-width: 700px;
-            }
-            
-            .brand-section {
-                min-height: auto;
-                padding: 2.5rem 2rem;
-            }
-            
-            .form-section {
-                padding: 2.5rem 2rem;
-            }
-        }
-        
         @media (max-width: 768px) {
-            html, body {
-                height: auto;
-                min-height: 100vh;
-                overflow: auto;
-            }
-            
-            .auth-container {
-                height: auto;
-                min-height: 100vh;
-                padding: 0.5rem;
-            }
-            
-            .auth-card {
-                margin: 0.5rem auto;
-            }
-            
             .brand-section {
                 min-height: auto;
                 padding: 2rem 1.5rem;
@@ -245,85 +185,45 @@
                 font-size: 3rem;
                 padding: 1rem;
             }
-            
-            .page-title {
-                font-size: 1.75rem;
-            }
-            
-            .form-floating > .form-control {
-                height: 55px;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            html, body {
-                height: auto;
-                min-height: 100vh;
-                overflow: auto;
-            }
-            
-            .auth-container {
-                height: auto;
-                min-height: 100vh;
-                padding: 0.25rem;
-            }
-            
-            .auth-card {
-                border-radius: 15px;
-                margin: 0.25rem auto;
-            }
-            
-            .brand-section {
-                padding: 1.5rem 1rem;
-            }
-            
-            .form-section {
-                padding: 1.5rem 1rem;
-            }
-            
-            .page-title {
-                font-size: 1.5rem;
-            }
-            
-            .page-subtitle {
-                font-size: 1rem;
-            }
         }
     </style>
 </head>
 <body>
     <div class="auth-container">
-        <div class="auth-card">
-            <div class="row g-0">
-                <!-- Brand Section -->
-                <div class="col-lg-5">
-                    <div class="brand-section">
-                        <div class="brand-icon">
-                            <i class="fas fa-bus"></i>
-                        </div>
-                        <h2 class="mb-3">Selamat Datang Kembali</h2>
-                        <p class="mb-0">Masuk ke akun Anda untuk melanjutkan pemesanan tiket bus</p>
-                        
-                        <ul class="feature-list">
-                            <li>
-                                <i class="fas fa-shield-alt"></i>
-                                <span>Keamanan Terjamin</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-clock"></i>
-                                <span>Akses 24/7</span>
-                            </li>
-                            <li>
-                                <i class="fas fa-heart"></i>
-                                <span>Mudah & Nyaman</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <!-- Form Section -->
-                <div class="col-lg-7">
-                    <div class="form-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="auth-card">
+                        <div class="row g-0">
+                            <!-- Brand Section -->
+                            <div class="col-lg-5">
+                                <div class="brand-section">
+                                    <div class="brand-icon">
+                                        <i class="fas fa-bus"></i>
+                                    </div>
+                                    <h2 class="mb-3">Selamat Datang Kembali</h2>
+                                    <p class="mb-0">Masuk ke akun Anda untuk melanjutkan pemesanan tiket bus</p>
+                                    
+                                    <ul class="feature-list">
+                                        <li>
+                                            <i class="fas fa-shield-alt"></i>
+                                            <span>Keamanan Terjamin</span>
+                                        </li>
+                                        <li>
+                                            <i class="fas fa-clock"></i>
+                                            <span>Akses 24/7</span>
+                                        </li>
+                                        <li>
+                                            <i class="fas fa-heart"></i>
+                                            <span>Mudah & Nyaman</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Form Section -->
+                            <div class="col-lg-7">
+                                <div class="form-section">
                                     <h1 class="page-title">Masuk ke Akun</h1>
                                     <p class="page-subtitle">Silakan masuk untuk melanjutkan ke dashboard Anda</p>
                                     

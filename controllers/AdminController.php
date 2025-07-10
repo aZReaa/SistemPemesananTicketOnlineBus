@@ -25,23 +25,6 @@ class AdminController {
      * Method ini sesuai dengan UML
      */
     public function showDashboard() {
-        // Mengambil data statistik untuk dashboard
-        require_once __DIR__ . '/../models/User.php';
-        require_once __DIR__ . '/../models/Jadwal.php';
-        require_once __DIR__ . '/../models/Pembayaran.php';
-        require_once __DIR__ . '/../models/Pemesanan.php';
-
-        $userModel = new User($this->pdo);
-        $jadwalModel = new Jadwal($this->pdo);
-        $pembayaranModel = new Pembayaran($this->pdo);
-        $pemesananModel = new Pemesanan($this->pdo);
-
-        // Data yang sesuai dengan variable di dashboard view
-        $totalPemesanan = $pemesananModel->getTotalCount();
-        $pendingPayments = $pembayaranModel->getPendingCount();
-        $totalRevenue = $pembayaranModel->getTotalRevenue();
-        $totalUsers = $userModel->getTotalCount();
-
         // Set template variables
         $pageTitle = 'Dashboard Admin - Sistem Tiket Bus';
         $userRole = 'admin';
@@ -357,26 +340,6 @@ class AdminController {
     }
 
     /**
-     * Menampilkan halaman untuk mengelola pengguna.
-     */
-    public function manageUsers() {
-        require_once __DIR__ . '/../models/User.php';
-        $userModel = new User($this->pdo);
-        $users = $userModel->getAll();
-
-        // Set template variables
-        $pageTitle = 'Manajemen Pengguna - Admin';
-        $userRole = 'admin';
-        $breadcrumbs = [
-            ['text' => 'Dashboard', 'href' => 'index.php?page=admin_dashboard'],
-            ['text' => 'Manajemen Pengguna', 'href' => '#']
-        ];
-
-        require_once __DIR__ . '/../views/layout/unified_header.php';
-        require_once __DIR__ . '/../views/admin/manage_users.php';
-        require_once __DIR__ . '/../views/layout/footer.php';
-    }
-
     /**
      * Update status tiket
      */

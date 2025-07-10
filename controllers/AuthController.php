@@ -14,18 +14,8 @@ class AuthController {
      * Menampilkan halaman formulir registrasi.
      */
     public function showRegistrationForm() {
-        // Template variables untuk unified header
-        $pageTitle = 'Registrasi Pelanggan - Sistem Tiket Bus';
-        $userRole = 'guest';
-        $breadcrumbs = [
-            ['text' => 'Home', 'href' => 'index.php?page=home'],
-            ['text' => 'Registrasi', 'href' => '#']
-        ];
-        
-        // Memuat file view untuk formulir registrasi
-        require_once __DIR__ . '/../views/layout/unified_header.php';
+        // Load registrasi page directly (no header/footer)
         require_once __DIR__ . '/../views/auth/registrasi.php';
-        require_once __DIR__ . '/../views/layout/footer.php';
     }
 
     /**
@@ -124,14 +114,17 @@ class AuthController {
      */
     public function processLogin() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (empty($_POST['username_or_email']) || empty($_POST['password'])) {
-                $error = "Username/email dan password tidak boleh kosong.";
-                require_once __DIR__ . '/../views/auth/login.php';
+            // Debug: Log the POST data
+            error_log("Login attempt with POST data: " . print_r($_POST, true));
+            
+            if (empty($_POST['username']) || empty($_POST['password'])) {
+                $_SESSION['error_message'] = "Username/email dan password tidak boleh kosong.";
+                $this->showLoginForm();
                 return;
             }
 
             $userModel = new User($this->pdo);
-            $user = $userModel->login($_POST['username_or_email'], $_POST['password']);
+            $user = $userModel->login($_POST['username'], $_POST['password']);
 
             if ($user) {
                 // Login berhasil, regenerasi ID sesi untuk keamanan
@@ -141,6 +134,9 @@ class AuthController {
                 $_SESSION['user_id'] = $user['id_user'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
+
+                // Debug: Log successful login
+                error_log("Login successful for user: " . $user['username'] . " with role: " . $user['role']);
 
                 // Arahkan pengguna berdasarkan peran
                 switch ($user['role']) {
@@ -157,9 +153,12 @@ class AuthController {
                 exit;
             } else {
                 // Login gagal
-                $error = "Password salah atau pengguna tidak ditemukan.";
-                require_once __DIR__ . '/../views/auth/login.php';
+                error_log("Login failed for username: " . $_POST['username']);
+                $_SESSION['error_message'] = "Password salah atau pengguna tidak ditemukan.";
+                $this->showLoginForm();
             }
+        } else {
+            $this->showLoginForm();
         }
     }
 

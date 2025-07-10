@@ -130,9 +130,6 @@
                                 <?= htmlspecialchars($_SESSION['nama'] ?? $_SESSION['username']) ?>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="index.php?page=profile">
-                                    <i class="fas fa-user-edit me-2"></i>Profile
-                                </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="index.php?page=logout">
                                     <i class="fas fa-sign-out-alt me-2"></i>Logout

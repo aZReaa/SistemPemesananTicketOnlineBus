@@ -123,13 +123,16 @@ class Jadwal {
     }
 
     /**
-     * Menyimpan jadwal baru ke database.
+     * Menyimpan jadwal baru ke database dan auto-generate tiket.
      * @param array $data Data jadwal dari form.
      * @return bool True jika berhasil, false jika gagal.
      */
     public function store($data) {
-        $sql = "INSERT INTO jadwal (id_rute, waktu_berangkat, waktu_tiba, harga) VALUES (?, ?, ?, ?)";
         try {
+            $this->pdo->beginTransaction();
+            
+            // 1. Insert jadwal baru
+            $sql = "INSERT INTO jadwal (id_rute, waktu_berangkat, waktu_tiba, harga) VALUES (?, ?, ?, ?)";
             $stmt = $this->pdo->prepare($sql);
             $result = $stmt->execute([
                 $data['id_rute'],
@@ -139,13 +142,59 @@ class Jadwal {
             ]);
             
             if (!$result) {
-                error_log("Jadwal store failed - SQL error: " . print_r($stmt->errorInfo(), true));
+                throw new Exception("Gagal menyimpan jadwal");
             }
             
-            return $result;
-        } catch (PDOException $e) {
-            error_log("PDO Exception in Jadwal store: " . $e->getMessage());
+            $new_jadwal_id = $this->pdo->lastInsertId();
+            
+            // 2. Auto-generate tiket untuk jadwal baru
+            $this->generateTiketForJadwal($new_jadwal_id, $data['id_rute']);
+            
+            $this->pdo->commit();
+            return true;
+            
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            error_log("Error in Jadwal store: " . $e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * Generate tiket otomatis untuk jadwal yang baru dibuat
+     * @param int $id_jadwal ID jadwal yang baru dibuat
+     * @param int $id_rute ID rute untuk mendapatkan kapasitas
+     * @return bool
+     */
+    private function generateTiketForJadwal($id_jadwal, $id_rute) {
+        try {
+            // Ambil kapasitas dari rute
+            $stmt = $this->pdo->prepare("SELECT kapasitas FROM rute WHERE id_rute = ?");
+            $stmt->execute([$id_rute]);
+            $rute = $stmt->fetch();
+            
+            if (!$rute) {
+                throw new Exception("Rute tidak ditemukan untuk ID: $id_rute");
+            }
+            
+            $kapasitas = $rute['kapasitas'] ?? 40;
+            
+            // Generate tiket available untuk setiap kursi
+            $stmt = $this->pdo->prepare("
+                INSERT INTO tiket (id_jadwal, nomor_kursi, status, kode_booking) 
+                VALUES (?, ?, 'available', CONCAT('AVAIL_', ?, '_', LPAD(?, 2, '0')))
+            ");
+            
+            for ($i = 1; $i <= $kapasitas; $i++) {
+                $stmt->execute([$id_jadwal, $i, $id_jadwal, $i]);
+            }
+            
+            error_log("✅ Auto-generated $kapasitas tiket untuk jadwal ID: $id_jadwal");
+            return true;
+            
+        } catch (Exception $e) {
+            error_log("❌ Error generating tiket: " . $e->getMessage());
+            throw $e;
         }
     }
 

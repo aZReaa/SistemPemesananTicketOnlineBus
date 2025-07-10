@@ -85,7 +85,6 @@
                         ['icon' => 'fas fa-calendar-alt', 'text' => 'Kelola Jadwal & Tiket', 'href' => 'admin_schedule'],
                         ['icon' => 'fas fa-route', 'text' => 'Kelola Rute', 'href' => 'admin_rutes'],
                         ['icon' => 'fas fa-credit-card', 'text' => 'Konfirmasi Pembayaran', 'href' => 'admin_payments'],
-                        ['icon' => 'fas fa-users', 'text' => 'Manajemen User', 'href' => 'admin_users'],
                         ['icon' => 'fas fa-chart-bar', 'text' => 'Laporan', 'href' => 'admin_reports'],
                     ];
                     break;
@@ -104,7 +103,6 @@
                         ['icon' => 'fas fa-home', 'text' => 'Dashboard', 'href' => 'pelanggan_dashboard'],
                         ['icon' => 'fas fa-search', 'text' => 'Cari Tiket', 'href' => 'search_schedule'],
                         ['icon' => 'fas fa-history', 'text' => 'Riwayat Pemesanan', 'href' => 'pelanggan_riwayat'],
-                        ['icon' => 'fas fa-user', 'text' => 'Profil', 'href' => 'pelanggan_profil'],
                     ];
                     break;
                     
@@ -199,12 +197,6 @@
                             <span class="d-none d-md-inline"><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <?php if ($userRole === 'pelanggan'): ?>
-                                <li><a class="dropdown-item" href="index.php?page=pelanggan_profil">
-                                    <i class="fas fa-user me-2"></i>Profil
-                                </a></li>
-                            <?php endif; ?>
-                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="index.php?page=logout">
                                 <i class="fas fa-sign-out-alt me-2"></i>Keluar
                             </a></li>

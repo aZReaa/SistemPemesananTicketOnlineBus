@@ -127,18 +127,6 @@ switch ($page) {
         $pelangganController->showTiket();
         break;
 
-    case 'pelanggan_profil':
-        require_once __DIR__ . '/../controllers/PelangganController.php';
-        $pelangganController = new PelangganController($pdo);
-        $pelangganController->showProfil();
-        break;
-
-    case 'pelanggan_update_profil':
-        require_once __DIR__ . '/../controllers/PelangganController.php';
-        $pelangganController = new PelangganController($pdo);
-        $pelangganController->updateProfil();
-        break;
-
     // Admin Routes
     case 'admin_dashboard':
         require_once __DIR__ . '/../controllers/AdminController.php';
@@ -164,12 +152,6 @@ switch ($page) {
         require_once __DIR__ . '/../controllers/AdminController.php';
         $adminController = new AdminController($pdo);
         $adminController->konfirmasiPembayaran();
-        break;
-
-    case 'admin_users':
-        require_once __DIR__ . '/../controllers/AdminController.php';
-        $adminController = new AdminController($pdo);
-        $adminController->manageUsers();
         break;
 
     case 'admin_reports':

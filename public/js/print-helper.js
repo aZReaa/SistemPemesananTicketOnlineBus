@@ -8,3 +8,4 @@ function printETicket() {
 document.addEventListener('DOMContentLoaded', function() {
     // Your existing DOMContentLoaded code
 });
+w

@@ -50,8 +50,11 @@ class Pemesanan {
                     throw new Exception("Kursi $seat sudah tidak tersedia.");
                 }
                 
-                // Update tiket menjadi booked
-                $stmt_tiket->execute([$id_pemesanan, $kode_booking, $id_jadwal, $seat]);
+                // Generate unique kode_booking per tiket (booking_code + seat number)
+                $unique_kode_booking = $kode_booking . '-' . str_pad($seat, 2, '0', STR_PAD_LEFT);
+                
+                // Update tiket menjadi booked dengan kode booking unik
+                $stmt_tiket->execute([$id_pemesanan, $unique_kode_booking, $id_jadwal, $seat]);
                 if ($stmt_tiket->rowCount() == 0) {
                     throw new Exception("Gagal memesan kursi $seat - kursi mungkin sudah dipesan orang lain.");
                 }

@@ -221,54 +221,6 @@ class PelangganController {
     }
 
     /**
-     * Menampilkan profil pelanggan.
-     */
-    public function showProfil() {
-        $userRole = $_SESSION['role'] ?? 'pelanggan';
-        $pageTitle = "Profil Saya";
-        $breadcrumbs = [
-            ['text' => 'Dashboard', 'href' => 'index.php?page=pelanggan_dashboard'],
-            ['text' => 'Profil Saya', 'href' => 'index.php?page=pelanggan_profil']
-        ];
-
-        require_once __DIR__ . '/../models/Pelanggan.php';
-        $pelangganModel = new Pelanggan($this->pdo);
-        
-        $pelanggan = $pelangganModel->findById($_SESSION['user_id']);
-        
-        require_once __DIR__ . '/../views/layout/unified_header.php';
-        require_once __DIR__ . '/../views/pelanggan/profil.php';
-        require_once __DIR__ . '/../views/layout/footer.php';
-    }
-
-    /**
-     * Memproses update profil pelanggan.
-     */
-    public function updateProfil() {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: index.php?page=pelanggan_profil');
-            exit;
-        }
-
-        $data = [
-            'nama' => $_POST['nama'] ?? '',
-            'email' => $_POST['email'] ?? '',
-            'telepon' => $_POST['telepon'] ?? '',
-            'alamat' => $_POST['alamat'] ?? ''
-        ];
-
-        require_once __DIR__ . '/../models/Pelanggan.php';
-        $pelangganModel = new Pelanggan($this->pdo);
-        
-        if ($pelangganModel->update($_SESSION['user_id'], $data)) {
-            header('Location: index.php?page=pelanggan_profil&success=updated');
-        } else {
-            header('Location: index.php?page=pelanggan_profil&error=update');
-        }
-        exit;
-    }
-
-    /**
      * Memproses booking dari form pemilihan kursi.
      * Method ini sesuai dengan UML: pesanTiket()
      */

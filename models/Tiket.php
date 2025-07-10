@@ -81,6 +81,24 @@ class Tiket {
     }
 
     /**
+     * Mendapatkan daftar kursi yang tersedia untuk jadwal tertentu.
+     * @param int $id_jadwal ID Jadwal.
+     * @return array Daftar nomor kursi yang tersedia.
+     */
+    public function getAvailableSeats($id_jadwal) {
+        $sql = "SELECT nomor_kursi FROM tiket WHERE id_jadwal = ? AND status = 'available' ORDER BY nomor_kursi ASC";
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$id_jadwal]);
+            return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        } catch (PDOException $e) {
+            error_log("Error getting available seats: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
      * Mencari tiket berdasarkan kode booking unik beserta detail lengkapnya.
      * @param string $kode_tiket Kode unik tiket.
      * @return array|false Data tiket jika ditemukan, atau false jika tidak.
@@ -188,43 +206,39 @@ class Tiket {
     }
 
     /**
-     * Get kapasitas total untuk jadwal tertentu berdasarkan bus
-     * @param int $id_jadwal ID jadwal
-     * @return int Kapasitas total
+     * Mendapatkan total kapasitas untuk jadwal tertentu.
+     * @param int $id_jadwal ID Jadwal.
+     * @return int Total kapasitas.
      */
     public function getKapasitasByJadwal($id_jadwal) {
+        $sql = "SELECT COUNT(*) as total FROM tiket WHERE id_jadwal = ?";
+        
         try {
-            $stmt = $this->pdo->prepare(
-                "SELECT r.kapasitas 
-                 FROM jadwal j 
-                 JOIN rute r ON j.id_rute = r.id_rute 
-                 WHERE j.id_jadwal = ?"
-            );
+            $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$id_jadwal]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result ? (int)$result['kapasitas'] : 40; // Default 40 jika tidak ada data
-        } catch (Exception $e) {
-            return 40; // Default kapasitas
+            return $result['total'] ?? 0;
+        } catch (PDOException $e) {
+            error_log("Error getting kapasitas: " . $e->getMessage());
+            return 0;
         }
     }
 
     /**
-     * Get jumlah tiket yang sudah dipesan untuk jadwal tertentu
-     * @param int $id_jadwal ID jadwal
-     * @return int Jumlah tiket terpesan
+     * Mendapatkan jumlah tiket yang sudah dipesan untuk jadwal tertentu.
+     * @param int $id_jadwal ID Jadwal.
+     * @return int Jumlah tiket yang sudah dipesan.
      */
     public function getBookedCount($id_jadwal) {
+        $sql = "SELECT COUNT(*) as total FROM tiket WHERE id_jadwal = ? AND status IN ('booked', 'used')";
+        
         try {
-            $stmt = $this->pdo->prepare(
-                "SELECT COUNT(*) as total 
-                 FROM tiket t 
-                 JOIN pemesanan p ON t.id_pemesanan = p.id_pemesanan 
-                 WHERE t.id_jadwal = ? AND p.status IN ('pending', 'paid')"
-            );
+            $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$id_jadwal]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result ? (int)$result['total'] : 0;
-        } catch (Exception $e) {
+            return $result['total'] ?? 0;
+        } catch (PDOException $e) {
+            error_log("Error getting booked count: " . $e->getMessage());
             return 0;
         }
     }

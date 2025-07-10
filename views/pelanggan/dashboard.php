@@ -132,22 +132,16 @@
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <a href="?page=search_schedule" class="btn btn-success btn-lg w-100">
                             <i class="fas fa-search me-2"></i>
                             Cari Tiket
                         </a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <a href="?page=pelanggan_riwayat" class="btn btn-primary btn-lg w-100">
                             <i class="fas fa-history me-2"></i>
                             Riwayat Pemesanan
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        <a href="?page=pelanggan_profil" class="btn btn-outline-primary btn-lg w-100">
-                            <i class="fas fa-user me-2"></i>
-                            Profil Saya
                         </a>
                     </div>
                 </div>
